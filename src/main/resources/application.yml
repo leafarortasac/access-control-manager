@@ -1,0 +1,83 @@
+server:
+  port: 8080
+
+info:
+  app:
+    description: "Identity and Access Management Service with Multi-tenancy (PostgreSQL)"
+
+spring:
+  application:
+    name: access-control-manager
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:access_control_db}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 20
+          time_zone: UTC
+        format_sql: true
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  jackson:
+    default-property-inclusion: non_empty
+    serialization:
+      write-dates-as-timestamps: false
+
+  main:
+    banner-mode: "console"
+    allow-bean-definition-overriding: true
+
+iam:
+  jwt:
+    secret: ${JWT_SECRET:M2I3YzA5OGU1YmFhN2U3Zjk0ZWY0ZGIyYmU5ZDBjZjkxZWRhYmFmNjA4MGY1ZDIzM2M4ZGM0ZTI5N2I0YmU3YQ==}
+    expiration-ms: 900000
+    refresh-expiration-ms: 604800000
+  client-id: ${IAM_CLIENT_ID:access-manager-app}
+  client-secret: ${IAM_CLIENT_SECRET:7e5a8f42-c1b3-4d9a-8e2f-1a5c6b7d8e9f}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info", "prometheus"]
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    root: INFO
+    br.com.access_control_manager: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{requestId}] [%X{tenantId}] [%X{userId}] --- [%thread] %logger{36} : %msg%n"
+
+app:
+  security:
+    cors:
+      allowed-origins:
+        - "http://localhost:8080"
+        - "http://127.0.0.1:8080"
