@@ -65,14 +65,16 @@ Endpoint: POST /api/v1/users
 
 Use o tenantId gerado acima, no payload abaixo, substituindo por "{ID_TENANT_A}".
 
-      {
-         "fullName": "Yago Roberto", 
-         "email": "yago.roberto.moraes@gastrolight.com.br", 
-         "password": "123456", 
-         "role": "ADMIN", 
-         "tenantId": "{ID_TENANT_A}", 
-         "cpf": "47084535403"
-      }
+      [
+         {
+            "fullName": "Yago Roberto", 
+            "email": "yago.roberto.moraes@gastrolight.com.br", 
+            "password": "123456", 
+            "role": "ADMIN", 
+            "tenantId": "{ID_TENANT_A}", 
+            "cpf": "47084535403"
+         }
+      ]
 
 🚩 Fase 2: Ciclo de Vida do Token & Segurança
 
